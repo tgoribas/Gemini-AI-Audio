@@ -74,16 +74,19 @@ def upload_file():
             }
             ])
 
+            # Converte o Audio em Texto
             convo.send_message("Converta esse audio para texto")
-            print(convo.last.text)
+            audioToText = convo.last.text
+            print(audioToText)
+            # Detalhe o Audio
             response = convo.send_message("Imaginando que você é um atendente de supote de um sistema ERP, baseado neses audio me faço um comentario geral sobre ele e me passa qual o sentimento da pessoa.")
-            print(convo.last.text, "\n")
+            emotionAudio = convo.last.text
+            print(emotionAudio)
 
+            return jsonify({"status": 200, "audioToText": audioToText, "emotionAudio": emotionAudio, "idTicket": data["idTicket"], "idMessage": data["idMensagem"]}), 200
         else:
             print("Erro ao baixar o arquivo de áudio:", response.status_code)
-
-        # Retorna uma resposta
-        return jsonify({"status": "sucesso", "mensagem": "Dados recebidos com sucesso!", "url": fileUrl}), 200
+            return jsonify({"status": 400, "mensagem": "Dados recebidos com sucesso!", "url": fileUrl}), 200
     else:
         return jsonify({"status": "erro", "mensagem": "Formato de requisição inválido. JSON esperado."}), 400
 
