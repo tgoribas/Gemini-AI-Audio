@@ -30,6 +30,9 @@ model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest",
 # Flask
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def index():
+    return "Google AI"
 @app.route('/upload', methods=['POST'])
 def upload_file():
     # Verifica se a requisição contém um JSON
