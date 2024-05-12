@@ -8,7 +8,7 @@ import os
 load_dotenv() # Carrega as variaveis .env
 
 # Configura Gemini
-google_api_key = secret_key = os.getenv('GOOGLE_API_KEY')
+google_api_key = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=google_api_key)
 
 generative_config = {
