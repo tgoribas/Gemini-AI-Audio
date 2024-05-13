@@ -1,6 +1,6 @@
 # Suporte ERP com Transcrição de Áudio
 
-Este projeto fornece uma solução automatizada para ajudar equipes de suporte de sistemas ERP através da transcrição automática de áudios enviados pelos usuários. Utilizando a Gemini AI, o sistema transcreve áudios recebidos e fornece um breve resumo e análise de sentimentos sobre os comentários dos usuários.
+Este projeto oferece uma solução inovadora para auxiliar equipes de suporte de sistemas ERP, utilizando a tecnologia de transcrição automática da Gemini AI, a inteligência artificial do Google. A ferramenta transcreve áudios enviados pelos usuários, gerando automaticamente um resumo conciso e uma análise de sentimentos dos comentários recebidos.
 
 ## Como Funciona
 
@@ -12,7 +12,7 @@ O endpoint espera receber uma requisição JSON no seguinte formato:
 
 ```json
 {
-  "fileUrl": "https://nfedovale1.s3-us-west-2.amazonaws.com/crm/7/ogg663ccf6bb5a8c.ogg",
+  "fileUrl": "https://www.linkdoaudio.com.br/audi01282743.ogg",
   "idTicket": "123",
   "idMensagem": "12345"
 }
@@ -33,4 +33,4 @@ Após o processamento, o endpoint retorna uma resposta JSON que inclui a transcr
 
 ### Requisitos
 + Python 3.8 ou superior.
-+ Bibliotecas: Flask, Requests, outras dependências listadas no requirements.txt.
++ Bibliotecas: Flask, Requests, Google GenerativeAI e outras dependências listadas no requirements.txt.
