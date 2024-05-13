@@ -1,5 +1,7 @@
 # Suporte ERP com Transcrição de Áudio
 
+![Gemini-Audio-Git-Compress](https://github.com/tgoribas/Gemini-AI-Audio/assets/37223526/15e56948-bd9a-411e-97b3-b4b7c85161e7)
+
 Este projeto oferece uma solução inovadora para auxiliar equipes de suporte de sistemas ERP, utilizando a tecnologia de transcrição automática da Gemini AI, a inteligência artificial do Google. A ferramenta transcreve áudios enviados pelos usuários, gerando automaticamente um resumo conciso e uma análise de sentimentos dos comentários recebidos.
 
 ## Como Funciona
