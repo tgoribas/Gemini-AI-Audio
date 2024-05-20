@@ -4,8 +4,11 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import requests
 import os
+import re
 
 load_dotenv() # Carrega as variaveis .env
+
+endPontAppScript = os.getenv('ENPOINT_APPSCRIPT')
 
 # Configura Gemini
 google_api_key = os.getenv('GOOGLE_API_KEY')
@@ -37,23 +40,20 @@ def index():
 def upload_file():
     # Verifica se a requisição contém um JSON
     if request.is_json:
-        # Obtém o JSON enviado na requisição
-        data = request.get_json()
+        data = request.get_json() # Obtém o JSON enviado na requisição
+        pattern = r"([^/]+\.ogg)$"
 
         # Aqui você pode adicionar o código para processar os dados recebidos
         print("Recebendo:")
         print(data)
-        print(f'URL do arquivo: {data["fileUrl"]}')
-        print(f'ID do Ticket: {data["idTicket"]}')
-        print(f'ID da Mensagem: {data["idMensagem"]}')
 
         fileUrl = data['fileUrl']
-
-        # URL do arquivo de áudio
-        audio_url = fileUrl
+        audio_url = fileUrl  # URL do arquivo de áudio
 
         # Nome do arquivo de áudio local
-        local_filename = "audio/ogg663ccf6bb5a8c.ogg"
+        audio_name = re.search(pattern, audio_url)
+        audioName = audio_name.group(1)
+        local_filename = f"audio/{audioName}"
 
         # Baixe o arquivo de áudio da URL
         response = requests.get(audio_url, stream=True)
@@ -77,18 +77,55 @@ def upload_file():
             # Converte o Audio em Texto
             convo.send_message("Converta esse audio para texto")
             audioToText = convo.last.text
-            print(audioToText)
             # Detalhe o Audio
             response = convo.send_message("Imaginando que você é um atendente de supote de um sistema ERP, baseado neses audio me faço um comentario geral sobre ele e me passa qual o sentimento da pessoa.")
             emotionAudio = convo.last.text
+
+            print(audioToText)
             print(emotionAudio)
 
-            return jsonify({"status": 200, "audioToText": audioToText, "emotionAudio": emotionAudio, "idTicket": data["idTicket"], "idMessage": data["idMensagem"]}), 200
+            #Deleta Arquivo
+            deletaArquivo(local_filename)
+
+            jsonReturn = {"status": 200, "audioToText": audioToText, "emotionAudio": emotionAudio, "idTicket": data["idTicket"], "idMessage": data["idMensagem"]}
+
+            sendAppScript(jsonReturn)
+            # Endpoint AppScript
+            # 
+
+            return jsonify(jsonReturn), 200
         else:
             print("Erro ao baixar o arquivo de áudio:", response.status_code)
             return jsonify({"status": 400, "mensagem": "Dados recebidos com sucesso!", "url": fileUrl}), 200
     else:
         return jsonify({"status": "erro", "mensagem": "Formato de requisição inválido. JSON esperado."}), 400
 
+def deletaArquivo(localArquivo):
+    try:
+        os.remove(localArquivo)
+        print(f"O arquivo {localArquivo} foi deletado com sucesso.")
+    except FileNotFoundError:
+        print(f"O arquivo {localArquivo} não foi encontrado.")
+    except PermissionError:
+        print(f"Permissão negada para deletar o arquivo {localArquivo}.")
+    except Exception as e:
+        print(f"Ocorreu um erro ao tentar deletar o arquivo {localArquivo}: {e}")
+
+
+def sendAppScript(json):
+    print(f"URL: {endPontAppScript}")
+    url = endPontAppScript
+    headers = {'Content-Type': 'application/json'}
+    payload = json
+    
+    response = requests.post(url, json=payload, headers=headers)
+    
+    if response.status_code == 200:
+        print('Dados enviados com sucesso!')
+    else:
+        print(f'Falha ao enviar dados. Status code: {response.status_code}')
+        print('Response:', response.text)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5000)
